@@ -35,7 +35,7 @@ export function useSSEStream() {
     abortControllerRef.current = new AbortController();
 
     try {
-      const response = await fetch('http://localhost:8000/api/chat/stream', {
+      const response = await fetch('https://kd865-ceo-twin-backend.hf.space/api/chat/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -120,7 +120,7 @@ export function useSSEStream() {
 
   const clearHistory = useCallback(async () => {
     if (sessionId) {
-      await fetch(`http://localhost:8000/api/chat/history/${sessionId}`, { method: 'DELETE' });
+      await fetch(`https://kd865-ceo-twin-backend.hf.space/api/chat/history/${sessionId}`, { method: 'DELETE' });
       setSessionId(null);
     }
     setMessages([]);

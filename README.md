@@ -1,4 +1,4 @@
-# CEO Digital Twin 
+# CEO Digital Twin
 
 This project contains the production-grade **Agentic 3-DB RAG** implementation.
 
@@ -21,6 +21,7 @@ It features a **LangGraph state machine**, **multi-label semantic routing**, a *
 ### 1. Environment Setup
 
 Create a `.env` file in the root directory and add your Groq API keys (comma-separated if you have multiple to enable automatic rate-limit rotation):
+
 ```env
 GROQ_API_KEYS=your_groq_api_key_1,your_groq_api_key_2
 ```
@@ -28,6 +29,7 @@ GROQ_API_KEYS=your_groq_api_key_1,your_groq_api_key_2
 ### 2. Backend Setup (Terminal 1)
 
 Install the Python dependencies using `uv` (recommended):
+
 ```powershell
 uv sync
 # Or manually: pip install -e .
@@ -35,34 +37,41 @@ uv sync
 
 **Prepare the Data Directory:**
 Since raw data and databases are not pushed to GitHub, you need to create the directory structure manually. In the root of the project, create the data folders:
+
 ```powershell
 mkdir data
 mkdir data/jsons
 ```
-*(Place all your transcript JSON files into the `data/jsons/` folder).*
+
+_(Place all your transcript JSON files into the `data/jsons/` folder)._
 
 **Run the Incremental Ingestion Pipeline:**
+
 ```powershell
 uv run python ingest.py
 ```
-*(This uses a SQLite ledger to deduplicate files and chunks. If you change the database schema or want to force a full re-ingestion, run `uv run python ingest.py --force`)*
+
+_(This uses a SQLite ledger to deduplicate files and chunks. If you change the database schema or want to force a full re-ingestion, run `uv run python ingest.py --force`)_
 
 **Start the FastAPI Server:**
+
 ```powershell
 uv run uvicorn backend.main:app --reload --port 8000
 ```
-*The API will be available at `http://localhost:8000`*
+
+_The API will be available at `https://kd865-ceo-twin-backend.hf.space`_
 
 ### 3. Frontend Setup (Terminal 2)
 
 Open a new terminal window, navigate to the `frontend` folder, install dependencies, and start the Vite server:
+
 ```powershell
 cd frontend
 npm install
 npm run dev
 ```
 
-*The UI will be available at `http://localhost:5173`*
+_The UI will be available at `http://localhost:5173`_
 
 ---
 

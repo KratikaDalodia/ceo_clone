@@ -90,5 +90,5 @@ async def startup():
     except Exception as e:
         log.warning(f"   LangGraph compile failed: {e}")
 
-    log.success("✅ CEO Digital Twin is live at http://localhost:8000")
+    log.success("✅ CEO Digital Twin is live at https://kd865-ceo-twin-backend.hf.space")
     log.info("=" * 60)
