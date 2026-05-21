@@ -1,48 +1,55 @@
-import { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Square, Trash2, Volume2, VolumeX } from 'lucide-react';
-import { useSSEStream } from '../hooks/useSSEStream';
-import { useVoice } from '../hooks/useVoice';
-import MessageBubble from './MessageBubble';
+import { useState, useRef, useEffect } from "react";
+import { Send, Mic, Square, Trash2, VolumeX } from "lucide-react";
+import { useSSEStream } from "../hooks/useSSEStream";
+import { useVoice } from "../hooks/useVoice";
+import MessageBubble from "./MessageBubble";
 
 export default function ChatInterface() {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isVoiceMode, setIsVoiceMode] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  
-  const { messages, isGenerating, sendMessage, stopGeneration, clearHistory } = useSSEStream();
-  
+
+  const { messages, isGenerating, sendMessage, stopGeneration, clearHistory } =
+    useSSEStream();
+
   // Voice integration
-  const { isRecording, toggleRecording, speak, stopSpeaking } = useVoice((text, voiceMode) => {
-    setIsVoiceMode(voiceMode);
-    sendMessage(text, voiceMode ? 'voice' : 'text');
-  });
+  const { isRecording, toggleRecording, speak, stopSpeaking } = useVoice(
+    (text, voiceMode) => {
+      setIsVoiceMode(voiceMode);
+      sendMessage(text, voiceMode ? "voice" : "text");
+    },
+  );
 
   // Speak completed messages if in voice mode
   useEffect(() => {
     if (isVoiceMode && messages.length > 0) {
       const lastMsg = messages[messages.length - 1];
-      if (lastMsg.role === 'assistant' && !lastMsg.isStreaming && !lastMsg.isThinking) {
+      if (
+        lastMsg.role === "assistant" &&
+        !lastMsg.isStreaming &&
+        !lastMsg.isThinking
+      ) {
         speak(lastMsg.content);
         // Reset voice mode flag after speaking so text messages don't get spoken
-        setIsVoiceMode(false); 
+        setIsVoiceMode(false);
       }
     }
   }, [messages, isVoiceMode, speak]);
 
   // Auto-scroll
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isGenerating]);
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!input.trim() || isGenerating) return;
-    sendMessage(input, 'text');
-    setInput('');
+    sendMessage(input, "text");
+    setInput("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }
@@ -57,15 +64,22 @@ export default function ChatInterface() {
             <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6 ring-1 ring-blue-100">
               <Mic className="w-8 h-8 text-blue-500" />
             </div>
-            <h2 className="text-2xl font-semibold text-slate-800 mb-2">Welcome to Anaxee</h2>
+            <h2 className="text-2xl font-semibold text-slate-800 mb-2">
+              Welcome to Anaxee
+            </h2>
             <p className="text-slate-500 max-w-md">
-              You are speaking with the digital twin of Govind Agrawal. 
-              Ask about Anaxee's vision, strategy in tier 2/3 cities, or recent updates.
+              You are speaking with the digital twin of Govind Agrawal. Ask
+              about Anaxee's vision, strategy in tier 2/3 cities, or recent
+              updates.
             </p>
           </div>
         ) : (
-          messages.map(msg => (
-            <MessageBubble key={msg.id} message={msg} onFollowUpClick={(q) => sendMessage(q, 'text')} />
+          messages.map((msg) => (
+            <MessageBubble
+              key={msg.id}
+              message={msg}
+              onFollowUpClick={(q) => sendMessage(q, "text")}
+            />
           ))
         )}
         <div ref={bottomRef} />
@@ -74,16 +88,19 @@ export default function ChatInterface() {
       {/* Input Area */}
       <div className="p-4 bg-white/80 backdrop-blur-lg border-t border-slate-200">
         <div className="flex items-center justify-between mb-3 px-2">
-          <button 
+          <button
             onClick={clearHistory}
             className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1 transition-colors"
           >
             <Trash2 className="w-3 h-3" /> Clear Chat
           </button>
-          
+
           {isVoiceMode && (
-            <button 
-              onClick={() => { stopSpeaking(); setIsVoiceMode(false); }}
+            <button
+              onClick={() => {
+                stopSpeaking();
+                setIsVoiceMode(false);
+              }}
               className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors animate-pulse-slow"
             >
               <VolumeX className="w-3 h-3" /> Stop Speaking
@@ -102,18 +119,22 @@ export default function ChatInterface() {
               rows={1}
             />
           </div>
-          
+
           <div className="flex gap-2 h-[56px]">
             <button
               type="button"
               onClick={toggleRecording}
               className={`flex items-center justify-center w-14 rounded-xl transition-all ${
-                isRecording 
-                  ? 'bg-red-50 text-red-500 border border-red-200 animate-pulse' 
-                  : 'glass-button text-slate-600'
+                isRecording
+                  ? "bg-red-50 text-red-500 border border-red-200 animate-pulse"
+                  : "glass-button text-slate-600"
               }`}
             >
-              {isRecording ? <Square className="w-5 h-5 fill-current" /> : <Mic className="w-5 h-5" />}
+              {isRecording ? (
+                <Square className="w-5 h-5 fill-current" />
+              ) : (
+                <Mic className="w-5 h-5" />
+              )}
             </button>
 
             {isGenerating ? (
